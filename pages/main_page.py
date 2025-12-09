@@ -6,6 +6,10 @@ from pages.base_page import BasePage
 
 class MainPage(BasePage):
 
+    @allure.step("Создание экземпляра MainPage")
+    def __init__(self, driver):
+        super().__init__(driver)
+
     @allure.step("Перейти к вопросу с переданным номером")
     def scroll_to_faq_question(self, question_number):
         self.scroll_to_element(MainPageLocators.faq_question(question_number))

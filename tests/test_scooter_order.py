@@ -1,6 +1,5 @@
 import pytest
 import allure
-import time
 from data import Credentials, RentDetails
 from urls import Urls
 
@@ -21,10 +20,9 @@ class TestScooterOrder:
         ])
     def test_order_creation_flow(self, entry_point, credentials, rent_details, firefox_create_close):
         driver = firefox_create_close
-        driver.get(Urls.main_page)
-        order_page = OrderPage(driver)
         main_page = MainPage(driver)
-        
+        order_page = OrderPage(driver)
+        main_page.open(Urls.main_page)       
         main_page.scroll_to_element(entry_point)
         main_page.click_element(entry_point)
 
@@ -57,8 +55,8 @@ class TestScooterOrder:
     @allure.description('Проверка, что при нажатии на лого Самоката приложение переводит на главную страницу.')
     def test_scooter_logo_redirects_to_main_page(self, firefox_create_close):
         driver = firefox_create_close
-        driver.get(Urls.order_page)
         header = Header(driver)
+        header.open(Urls.order_page)
         header.click_scooter_logo()
 
         assert header.get_current_url() == Urls.main_page
@@ -66,13 +64,14 @@ class TestScooterOrder:
     @allure.title("Проверка нажатия на лого Яндекса")
     @allure.description("Проверка, что при нажатии на лого Яндекса приложение переводит на страницу Дзена")
     def test_yandex_logo_redirects_to_dzen(self, firefox_create_close):
-        driver = firefox_create_close
-        driver.get(Urls.order_page)
+        driver = firefox_create_close        
         header = Header(driver)
+        header.open(Urls.order_page)
+        original_window = driver.current_window_handle
         header.click_yandex_logo()
-        time.sleep(5)
-        driver.switch_to.window(driver.window_handles[-1])
-        time.sleep(3)
-        current_url = driver.current_url
+        header.wait_for_new_window_opened(original_window)
+        header.switch_to_new_window(original_window)
+        header.wait_for_url_contains(Urls.dzen_page)
+        current_url = header.get_current_url()
 
-        assert "dzen.ru" in current_url, f"Ожидался dzen.ru, получен: {current_url}"
+        assert Urls.dzen_page in current_url, f"Ожидался {Urls.dzen_page}, получен: {current_url}"

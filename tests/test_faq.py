@@ -14,7 +14,7 @@ class TestFAQs:
     def test_faq_answers(self, question_number, answer_text, firefox_create_close):
         driver = firefox_create_close
         main_page = MainPage(driver)
-        driver.get(Urls.main_page)
+        main_page.open(Urls.main_page)
         main_page.scroll_to_faq_question(question_number)
         main_page.click_faq_question(question_number)
         actual_text = main_page.get_faq_answer_text(question_number)

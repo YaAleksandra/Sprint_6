@@ -5,6 +5,10 @@ from locators.order_page_locators import OrderPageLocators
 
 class OrderPage(BasePage):
 
+    @allure.step("Создание экземпляра OrderPage")
+    def __init__(self, driver):
+        super().__init__(driver)
+
     @allure.step("Ввести переданное значение в поле Имя")
     def enter_name(self, name):
         self.fill_field(OrderPageLocators.name_input, name)
@@ -88,8 +92,4 @@ class OrderPage(BasePage):
 
     @allure.step("Проверить, что появилось окно подтверждения заказа")
     def is_order_confirmed(self):
-        try:
-            self.wait_for_element(OrderPageLocators.order_success_header)
-            return True
-        except Exception:
-            return False
+        return self.is_element_visible(OrderPageLocators.order_success_header)

@@ -6,6 +6,10 @@ from pages.base_page import BasePage
 
 class Header(BasePage):
 
+    @allure.step("Создание экземпляра Header")
+    def __init__(self, driver):
+        super().__init__(driver)
+
     @allure.step('Нажать на логотип Самоката')
     def click_scooter_logo(self):
         self.click_element(HeaderLocators.scooter_logo)
